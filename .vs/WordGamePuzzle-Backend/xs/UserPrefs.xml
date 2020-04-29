@@ -1,0 +1,29 @@
+﻿<Properties StartupConfiguration="{DAE5A0C4-722C-4A40-8FCB-2F9852CD3CF3}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="WordGamePuzzle-Backend/Controllers/PuzzleProducer.cs">
+    <Files>
+      <File FileName="WordGamePuzzle-Backend/Controllers/WordsController.cs" Line="63" Column="41" />
+      <File FileName="WordGamePuzzle-Backend/Controllers/PuzzleProducer.cs" Line="128" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="WordGamePuzzle-Backend" expanded="True">
+            <Node name="WordGamePuzzle-Backend" expanded="True">
+              <Node name="Controllers" expanded="True">
+                <Node name="PuzzleProducer.cs" selected="True" />
+              </Node>
+              <Node name="Models" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.WordGamePuzzle-Backend PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
