@@ -9,7 +9,7 @@ namespace WordGamePuzzle_Backend.Controllers
     {
         private int mDepth { get; set; }
         private int mWidth { get; set; }
-        private int[,] matris;
+        private string[,] matris;
         private bool isFirstWord;
         private List<WordModel> Words;
 
@@ -17,24 +17,31 @@ namespace WordGamePuzzle_Backend.Controllers
         {
             mDepth = depth;
             mWidth = width;
-            matris = new int[mDepth, mWidth];
+            matris = new string[mDepth, mWidth];
             isFirstWord = true;
             Words = words;
             Console.WriteLine($"Matris initialized. Word count :{Words.Count}");
+            //PrintMatris();
+        }
+
+        public string[,] GetMatris()
+        {
             foreach (var word in Words)
             {
                 Console.WriteLine($"Word : {word.Word}");
-                var res = CreatePuzzle(word);
+                var res = WriteWord(word);
                 if (!res)
                 {
                     Console.WriteLine("Not written.");
+
                 }
             }
-            PrintMatris();
+            Console.WriteLine("Words finished.");
+            PrintMatris(); 
+            return matris;
         }
 
-
-        bool CreatePuzzle(WordModel word)
+        bool WriteWord(WordModel word)
         {
             if (isFirstWord)
             {
@@ -42,7 +49,7 @@ namespace WordGamePuzzle_Backend.Controllers
                 {
                     for (int i = 0; i < word.Letters.Count; i++)
                     {
-                        matris[(mDepth / 2), ((mWidth / 5) + i)] = word.Letters[i].Id;
+                        matris[(mDepth / 2), ((mWidth / 5) + i)] = word.Letters[i].Letter;
                     }
 
                     isFirstWord = false;
@@ -55,7 +62,7 @@ namespace WordGamePuzzle_Backend.Controllers
                 for (int k = 0; k < word.Letters.Count; k++)
                 {
                     var letter = word.Letters[k];
-                    var locations = FindLetterLocationInMatris(letter.Id);
+                    var locations = FindLetterLocationInMatris(letter.Letter);
                     if (locations.Count > 0)
                     {
                         foreach (var location in locations)
@@ -63,7 +70,7 @@ namespace WordGamePuzzle_Backend.Controllers
                             try
                             {
                                 // check matris vertical
-                                if (matris[location.x - 1, location.y] == 0 && matris[location.x + 1, location.y] == 0)
+                                if (string.IsNullOrEmpty(matris[location.x - 1, location.y]) && string.IsNullOrEmpty(matris[location.x + 1, location.y]))
                                 {
                                     if (k == 0 && CheckMatrisVerticalToDown(word, location.x, location.y))
                                     {
@@ -91,8 +98,8 @@ namespace WordGamePuzzle_Backend.Controllers
 
                             try
                             {
-                                if (matris[location.x, location.y - 1] == 0 &&
-                                    matris[location.x, location.y + 1] == 0) // check matris horizontal
+                                if (string.IsNullOrEmpty(matris[location.x, location.y - 1]) &&
+                                    string.IsNullOrEmpty(matris[location.x, location.y + 1])) // check matris horizontal
                                 {
                                     if (k == 0 && CheckMatrisHorizontalToRight(word, location.x, location.y))
                                     {
@@ -131,7 +138,7 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 1; i < word.Letters.Count; i++)
                 {
-                    if (matris[x, y + i] != 0 || matris[(x + 1), (y + i)] != 0 || matris[(x - 1), (y + i)] != 0)
+                    if (!string.IsNullOrEmpty(matris[x, y + i]) || !string.IsNullOrEmpty(matris[(x + 1), (y + i)]) || !string.IsNullOrEmpty(matris[(x - 1), (y + i)]))
                     {
                         return false;
                     }
@@ -151,7 +158,7 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 1; i < word.Letters.Count; i++)
                 {
-                    if (matris[x, y - i] != 0 || matris[x + 1, y + i] != 0 || matris[x - 1, y + i] != 0)
+                    if (!string.IsNullOrEmpty(matris[x, y - i]) || !string.IsNullOrEmpty(matris[x + 1, y + i]) || !string.IsNullOrEmpty(matris[x - 1, y + i]))
                     {
                         return false;
                     }
@@ -171,7 +178,7 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 0; i < word.Letters.Count; i++)
                 {
-                    matris[x, y + i] = word.Letters[i].Id;
+                    matris[x, y + i] = word.Letters[i].Letter;
                 }
 
                 return true;
@@ -193,12 +200,11 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 1; i < word.Letters.Count; i++)
                 {
-                    if (matris[x - i, y] != 0 || matris[x + i, y + 1] != 0 || matris[x + i, y - 1] != 0)
+                    if (!string.IsNullOrEmpty(matris[x - i, y]) || !string.IsNullOrEmpty(matris[x + i, y + 1]) || !string.IsNullOrEmpty(matris[x + i, y - 1]))
                     {
                         return false;
                     }
                 }
-
                 return true;
             }
             catch (Exception)
@@ -213,12 +219,11 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 1; i < word.Letters.Count; i++)
                 {
-                    if (matris[x + i, y] != 0 || matris[x + i, y + 1] != 0 || matris[x + i, y - 1] != 0)
+                    if (!string.IsNullOrEmpty(matris[x + i, y]) || !string.IsNullOrEmpty(matris[x + i, y + 1]) || !string.IsNullOrEmpty(matris[x + i, y - 1]))
                     {
                         return false;
                     }
                 }
-
                 return true;
             }
             catch (Exception)
@@ -233,7 +238,7 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 0; i < word.Letters.Count; i++)
                 {
-                    matris[x + i, y] = word.Letters[i].Id;
+                    matris[x + i, y] = word.Letters[i].Letter;
                 }
 
                 return true;
@@ -249,14 +254,14 @@ namespace WordGamePuzzle_Backend.Controllers
             return WriteWordToDown(word, x - (word.Letters.Count - 1), y);
         }
 
-        List<Location> FindLetterLocationInMatris(int letterId)
+        List<Location> FindLetterLocationInMatris(string l)
         {
             List<Location> index = new List<Location>();
             for (int i = 0; i < mDepth; i++)
             {
                 for (int j = 0; j < mWidth; j++)
                 {
-                    if (matris[i, j] == letterId)
+                    if (matris[i, j] == l)
                     {
                         index.Add(new Location
                         {
@@ -277,6 +282,10 @@ namespace WordGamePuzzle_Backend.Controllers
                 Console.Write($"{i + 1} | ");
                 for (int j = 0; j < mWidth; j++)
                 {
+                    if (string.IsNullOrEmpty(matris[i, j]))
+                    {
+                        matris[i, j] = "0";
+                    }
                     Console.Write($"{matris[i, j]}");
                 }
 

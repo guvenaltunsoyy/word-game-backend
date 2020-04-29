@@ -1,25 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/Users/guvenaltunsoy/Desktop/Projects/word-game-backend/WordGamePuzzle-Backend/WordGamePuzzle-Backend.csproj": {}
+    "C:\\Users\\Phygitalmind\\Desktop\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend.csproj": {}
   },
   "projects": {
-    "/Users/guvenaltunsoy/Desktop/Projects/word-game-backend/WordGamePuzzle-Backend/WordGamePuzzle-Backend.csproj": {
+    "C:\\Users\\Phygitalmind\\Desktop\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/guvenaltunsoy/Desktop/Projects/word-game-backend/WordGamePuzzle-Backend/WordGamePuzzle-Backend.csproj",
+        "projectUniqueName": "C:\\Users\\Phygitalmind\\Desktop\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend.csproj",
         "projectName": "WordGamePuzzle-Backend",
-        "projectPath": "/Users/guvenaltunsoy/Desktop/Projects/word-game-backend/WordGamePuzzle-Backend/WordGamePuzzle-Backend.csproj",
-        "packagesPath": "/Users/guvenaltunsoy/.nuget/packages/",
-        "outputPath": "/Users/guvenaltunsoy/Desktop/Projects/word-game-backend/WordGamePuzzle-Backend/obj/",
+        "projectPath": "C:\\Users\\Phygitalmind\\Desktop\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend.csproj",
+        "packagesPath": "C:\\Users\\Phygitalmind\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Phygitalmind\\Desktop\\WordGamePuzzle-Backend\\WordGamePuzzle-Backend\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/Users/guvenaltunsoy/.config/NuGet/NuGet.Config"
+          "C:\\Users\\Phygitalmind\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -83,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.201/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

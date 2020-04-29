@@ -42,7 +42,7 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        // GET: api/Words/5
+        // GET: api/Words/id/5
         [HttpGet("id/{id}", Name = "Get")]
         public ActionResult Get(int id)
         {
@@ -118,13 +118,16 @@ namespace WordGamePuzzle_Backend.Controllers
         }
 
 
-        // GET: api/Words/5
-        [HttpGet("{groupId}")]
-        public ActionResult GetGameWords(int groupId)
+        // GET: api/Words/1/2
+        [HttpGet("{groupId}/{wordCount}")]
+        public ActionResult GetGameWords(int groupId, int wordCount)
         {
             try
             {
-                return Ok(GetAllWords().Where(x=>x.GroupId==groupId));
+                var _words = GetAllWords().Where(x => x.GroupId == groupId).Take(wordCount).ToList();
+                PuzzleProducer puzzle = new PuzzleProducer(7, 15, _words);
+                var res = puzzle.GetMatris();
+                return Ok("succes:true");
             }
             catch (Exception e)
             {
@@ -150,6 +153,7 @@ namespace WordGamePuzzle_Backend.Controllers
                 {
                     Id = x.Id,
                     Word = x.Word,
+                    GroupId = x.GroupId,
                     Letters = _lets
                 });
             });
