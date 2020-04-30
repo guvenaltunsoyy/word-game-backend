@@ -24,6 +24,7 @@
     ".NETCoreApp,Version=v3.1": {
       "WordGamePuzzle-Backend/1.0.0": {
         "dependencies": {
+          "Json.Net": "1.0.21",
           "Microsoft.EntityFrameworkCore": "3.1.3",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.3",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.2",
@@ -308,6 +309,17 @@
         },
         "compile": {
           "WordGamePuzzle-Backend.dll": {}
+        }
+      },
+      "Json.Net/1.0.21": {
+        "runtime": {
+          "lib/netstandard2.0/Json.Net.dll": {
+            "assemblyVersion": "1.0.21.1",
+            "fileVersion": "1.0.21.1"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Json.Net.dll": {}
         }
       },
       "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
@@ -3781,6 +3793,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Json.Net/1.0.21": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1WNtS47qjiqE9uJjZPc/YSmyfu6aoPP9jyyJUa0l2yx/S6U3H0+ZqWyowrRJoXU0jSbODMgS0b0x4tYDYuJwRA==",
+      "path": "json.net/1.0.21",
+      "hashPath": "json.net.1.0.21.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Html.Abstractions/2.2.0": {
       "type": "package",

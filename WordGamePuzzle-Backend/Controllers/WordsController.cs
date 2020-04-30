@@ -127,7 +127,8 @@ namespace WordGamePuzzle_Backend.Controllers
                 var _words = GetAllWords().Where(x => x.GroupId == groupId).Take(wordCount).ToList();
                 PuzzleProducer puzzle = new PuzzleProducer(7, 15, _words);
                 var res = puzzle.GetMatris();
-                return Ok("succes:true");
+                string jsonData = JsonConvert.SerializeObject(res);
+                return Content(jsonData, "application/json");
             }
             catch (Exception e)
             {
