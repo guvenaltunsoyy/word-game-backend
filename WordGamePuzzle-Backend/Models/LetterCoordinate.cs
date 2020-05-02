@@ -12,7 +12,7 @@ namespace WordGamePuzzle_Backend.Models
         {
             Coordinates = new List<Location>();
         }
-        public WordModel WordModel { get; set; }
+        public Words WordModel { get; set; }
         public List<Location> Coordinates { get; set; }
     }
 

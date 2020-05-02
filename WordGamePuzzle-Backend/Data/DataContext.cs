@@ -15,8 +15,6 @@ namespace WordGamePuzzle_Backend.Data
         }
 
         public DbSet<Words> Words { get; set; }
-        public DbSet<LetterModel> Letters { get; set; }
-        public DbSet<WordLetterMappingModel> WordLetterMapping { get; set; }
 
     }
 }
