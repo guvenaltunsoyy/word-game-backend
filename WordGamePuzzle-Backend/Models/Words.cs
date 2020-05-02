@@ -10,5 +10,6 @@ namespace WordGamePuzzle_Backend.Models
         public int? Id { get; set; }
         public string Word { get; set; }
         public int GroupId { get; set; }
+        public int? Level { get; set; }
     }
 }

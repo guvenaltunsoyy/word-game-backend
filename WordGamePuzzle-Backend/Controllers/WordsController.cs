@@ -75,28 +75,36 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        // POST: api/Words
+        // POST: api/Words/
         [HttpPost]
-        public async Task<ActionResult> CreateWord([FromBody] Words wordModel)
+        public async Task<ActionResult> CreateWord([FromBody] List<Words> wordModels)
         {
             try
             {
-                var word= _dataContext.Words.Add(wordModel);
-                _dataContext.SaveChanges();
-
-                foreach (char c in wordModel.Word)
+                foreach (var wordModel in wordModels)
                 {
-                    WordLetterMapping(wordModel.Id, c.ToString());
-                    await Task.Delay(100);
+                    wordModel.Level = wordModel.Word.Length;
+                    _dataContext.Words.Add(wordModel);
+                    _dataContext.SaveChanges();
+
+                    foreach (char c in wordModel.Word)
+                    {
+                        WordLetterMapping(wordModel.Id, c.ToString());
+                        await Task.Delay(100);
+                    }
+                    _logger.LogInformation($"WORD ADDED :{wordModel.Word}");
+                    Console.WriteLine("WORD ADDED :{0}", wordModel.Word);
+
                 }
 
-                return Ok(wordModel);
+                return Ok(wordModels);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
+
 
         public ActionResult WordLetterMapping(int? wId, string l)
         {
