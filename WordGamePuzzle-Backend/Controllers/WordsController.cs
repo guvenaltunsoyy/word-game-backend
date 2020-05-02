@@ -18,14 +18,12 @@ namespace WordGamePuzzle_Backend.Controllers
     {
         private readonly ILogger<WordsController> _logger;
         private readonly DataContext _dataContext;
-        private readonly List<LetterModel> _letters;
-        private List<WordModel> _puzzleWords;
+        private List<Words> _puzzleWords;
         public WordsController(ILogger<WordsController> logger, 
             DataContext context)
         {
             _logger = logger;
             _dataContext = context;
-            _letters = _dataContext.Letters.ToList();
         }
         // GET: api/Words
         [HttpGet("all")]
@@ -59,22 +57,6 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        // api/words/mapping
-        [HttpGet("mapping")]
-        public ActionResult GetMapping()
-        {
-            _logger.LogInformation(message: "mapping Called");
-            try
-            {
-                return Ok(_dataContext.WordLetterMapping.ToList());
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(message: e.Message);
-                return StatusCode(404, "An error has occurred");
-            }
-        }
-
         // POST: api/Words/
         [HttpPost]
         public async Task<ActionResult> CreateWord([FromBody] List<Words> wordModels)
@@ -86,12 +68,6 @@ namespace WordGamePuzzle_Backend.Controllers
                     wordModel.Level = wordModel.Word.Length;
                     _dataContext.Words.Add(wordModel);
                     _dataContext.SaveChanges();
-
-                    foreach (char c in wordModel.Word)
-                    {
-                        WordLetterMapping(wordModel.Id, c.ToString());
-                        await Task.Delay(100);
-                    }
                     _logger.LogInformation($"WORD ADDED :{wordModel.Word}");
                     Console.WriteLine("WORD ADDED :{0}", wordModel.Word);
 
@@ -106,27 +82,6 @@ namespace WordGamePuzzle_Backend.Controllers
         }
 
 
-        public ActionResult WordLetterMapping(int? wId, string l)
-        {
-            try
-            {
-                var letter = _letters.FirstOrDefault(x => x.Letter == l);
-                _dataContext.WordLetterMapping.Add(new WordLetterMappingModel
-                {
-                    LetterId = letter.Id,
-                    WordId = wId ?? 0
-                });
-                _dataContext.SaveChanges();
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return StatusCode(500);
-            }
-        }
-
-
         // GET: api/Words/1/2
         [HttpGet("{groupId}/{wordCount}")]
         public ActionResult GetPuzzleWords(int groupId, int wordCount)
@@ -134,7 +89,7 @@ namespace WordGamePuzzle_Backend.Controllers
             try
             {
                 _puzzleWords = GetAllWords().Where(x => x.GroupId == groupId).Take(wordCount).ToList();
-                var res = PuzzleProducer.Instance.GetMatris(15, 15, _puzzleWords);
+                var res = PuzzleProducer.Instance.GetMatris(12, 15, _puzzleWords);
                 string jsonData = JsonConvert.SerializeObject(res);
                 return Content(jsonData, "application/json");
             }
@@ -158,26 +113,18 @@ namespace WordGamePuzzle_Backend.Controllers
                 return StatusCode(404);
             }
         }
-        public List<WordModel> GetAllWords()
+        public List<Words> GetAllWords()
         {
-            List<LetterModel> _lets;
-            List<WordModel> words = new List<WordModel>();
+            List<Words> words = new List<Words>();
             var result = _dataContext.Words.ToList();
-            var mapping = _dataContext.WordLetterMapping.ToList();
             result.ForEach(x=>
             {
-                var r = mapping.Where(y => y.WordId == x.Id).ToList();
-                _lets = new List<LetterModel>();
-                r.ForEach(s =>
-                {
-                    _lets.Add(_letters.FirstOrDefault(a=>a.Id==s.LetterId));
-                });
-                words.Add(new WordModel
+                words.Add(new Words
                 {
                     Id = x.Id,
                     Word = x.Word,
                     GroupId = x.GroupId,
-                    Letters = _lets
+                    Level =  x.Level
                 });
             });
             return words;

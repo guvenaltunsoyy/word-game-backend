@@ -12,7 +12,7 @@ namespace WordGamePuzzle_Backend.Controllers
         private int mWidth { get; set; }
         private string[,] matris;
         private bool isFirstWord;
-        private List<WordModel> Words;
+        private List<Words> Words;
         private List<LetterCoordinate> letterCoordinates;
 
         PuzzleProducer()
@@ -38,7 +38,7 @@ namespace WordGamePuzzle_Backend.Controllers
         }
 
 
-        public string[,] GetMatris(int depth = 7, int width = 15, List<WordModel> words = null)
+        public string[,] GetMatris(int depth = 7, int width = 15, List<Words> words = null)
         {
             mDepth = depth;
             mWidth = width;
@@ -67,15 +67,15 @@ namespace WordGamePuzzle_Backend.Controllers
             return matris;
         }
 
-        bool WriteWord(WordModel word)
+        bool WriteWord(Words word)
         {
             if (isFirstWord)
             {
-                if (word.Letters.Count != mWidth)
+                if (word.Word.Length != mWidth)
                 {
-                    for (int i = 0; i < word.Letters.Count; i++)
+                    for (int i = 0; i < word.Word.Length; i++)
                     {
-                        matris[(mDepth / 2), ((mWidth / 5) + i)] = word.Letters[i].Letter;
+                        matris[(mDepth / 2), ((mWidth / 5) + i)] = word.Word[i].ToString();
                         letterCoordinates
                             .FirstOrDefault(x => x.WordModel.Id == word.Id)
                             ?.Coordinates.Add(new Location
@@ -92,10 +92,10 @@ namespace WordGamePuzzle_Backend.Controllers
             }
             else
             {
-                for (int k = 0; k < word.Letters.Count; k++)
+                for (int k = 0; k < word.Word.Length; k++)
                 {
-                    var letter = word.Letters[k];
-                    var locations = FindLetterLocationInMatris(letter.Letter);
+                    var letter = word.Word[k].ToString();
+                    var locations = FindLetterLocationInMatris(letter);
                     if (locations.Count > 0)
                     {
                         foreach (var location in locations)
@@ -113,7 +113,7 @@ namespace WordGamePuzzle_Backend.Controllers
                                             return true;
                                         }
                                     }
-                                    else if (k == word.Letters.Count - 1 &&
+                                    else if (k == word.Word.Length - 1 &&
                                              CheckMatrisVerticalToUp(word, location.x, location.y))
                                     {
                                         if (WriteWordToUpwards(word, location.x, location.y))
@@ -142,7 +142,7 @@ namespace WordGamePuzzle_Backend.Controllers
                                             return true;
                                         }
                                     }
-                                    else if (k == word.Letters.Count - 1 &&
+                                    else if (k == word.Word.Length - 1 &&
                                              CheckMatrisHorizontalToLeft(word, location.x, location.y))
                                     {
                                         if (WriteWordToLeft(word, location.x, location.y))
@@ -165,11 +165,11 @@ namespace WordGamePuzzle_Backend.Controllers
             return false;
         }
 
-        bool CheckMatrisHorizontalToRight(WordModel word, int x, int y)
+        bool CheckMatrisHorizontalToRight(Words word, int x, int y)
         {
             try
             {
-                for (int i = 1; i < word.Letters.Count; i++)
+                for (int i = 1; i < word.Word.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(matris[x, y + i]) || !string.IsNullOrEmpty(matris[(x + 1), (y + i)]) || !string.IsNullOrEmpty(matris[(x - 1), (y + i)]))
                     {
@@ -185,11 +185,11 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        bool CheckMatrisHorizontalToLeft(WordModel word, int x, int y)
+        bool CheckMatrisHorizontalToLeft(Words word, int x, int y)
         {
             try
             {
-                for (int i = 1; i < word.Letters.Count; i++)
+                for (int i = 1; i < word.Word.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(matris[x, y - i]) || !string.IsNullOrEmpty(matris[x + 1, y + i]) || !string.IsNullOrEmpty(matris[x - 1, y + i]))
                     {
@@ -205,13 +205,13 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        bool WriteWordToRight(WordModel word, int x, int y)
+        bool WriteWordToRight(Words word, int x, int y)
         {
             try
             {
-                for (int i = 0; i < word.Letters.Count; i++)
+                for (int i = 0; i < word.Word.Length; i++)
                 {
-                    matris[x, y + i] = word.Letters[i].Letter;
+                    matris[x, y + i] = word.Word[i].ToString();
                     letterCoordinates
                         .FirstOrDefault(x => x.WordModel.Id == word.Id)
                         .Coordinates.Add(new Location
@@ -229,16 +229,16 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        bool WriteWordToLeft(WordModel word, int x, int y)
+        bool WriteWordToLeft(Words word, int x, int y)
         {
-            return WriteWordToRight(word, x, y - word.Letters.Count + 1);
+            return WriteWordToRight(word, x, y - word.Word.Length + 1);
         }
 
-        bool CheckMatrisVerticalToUp(WordModel word, int x, int y)
+        bool CheckMatrisVerticalToUp(Words word, int x, int y)
         {
             try
             {
-                for (int i = 1; i < word.Letters.Count; i++)
+                for (int i = 1; i < word.Word.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(matris[x - i, y]) || !string.IsNullOrEmpty(matris[x + i, y + 1]) || !string.IsNullOrEmpty(matris[x + i, y - 1]))
                     {
@@ -253,11 +253,11 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        bool CheckMatrisVerticalToDown(WordModel word, int x, int y)
+        bool CheckMatrisVerticalToDown(Words word, int x, int y)
         {
             try
             {
-                for (int i = 1; i < word.Letters.Count; i++)
+                for (int i = 1; i < word.Word.Length; i++)
                 {
                     if (!string.IsNullOrEmpty(matris[x + i, y]) || !string.IsNullOrEmpty(matris[x + i, y + 1]) || !string.IsNullOrEmpty(matris[x + i, y - 1]))
                     {
@@ -272,13 +272,13 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        bool WriteWordToDown(WordModel word, int x, int y)
+        bool WriteWordToDown(Words word, int x, int y)
         {
             try
             {
-                for (int i = 0; i < word.Letters.Count; i++)
+                for (int i = 0; i < word.Word.Length; i++)
                 {
-                    matris[x + i, y] = word.Letters[i].Letter;
+                    matris[x + i, y] = word.Word[i].ToString();
                     letterCoordinates
                         .FirstOrDefault(x=>x.WordModel.Id == word.Id)
                         .Coordinates.Add(new Location
@@ -296,9 +296,9 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
-        bool WriteWordToUpwards(WordModel word, int x, int y)
+        bool WriteWordToUpwards(Words word, int x, int y)
         {
-            return WriteWordToDown(word, x - (word.Letters.Count - 1), y);
+            return WriteWordToDown(word, x - (word.Word.Length - 1), y);
         }
 
         List<Location> FindLetterLocationInMatris(string l)
@@ -344,7 +344,7 @@ namespace WordGamePuzzle_Backend.Controllers
         {
             /*foreach (var letterCoordinate in letterCoordinates) 
             {
-                letterCoordinate.WordModel.Letters = letterCoordinate.WordModel.Letters.OrderBy(x => x.Id).ToList();
+                letterCoordinate.Words.Letters = letterCoordinate.Words.Letters.OrderBy(x => x.Id).ToList();
             }*/
             return letterCoordinates;
         }
