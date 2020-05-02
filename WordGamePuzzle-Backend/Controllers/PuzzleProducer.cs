@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using WordGamePuzzle_Backend.Models;
 
 namespace WordGamePuzzle_Backend.Controllers
@@ -12,23 +13,48 @@ namespace WordGamePuzzle_Backend.Controllers
         private string[,] matris;
         private bool isFirstWord;
         private List<WordModel> Words;
+        private List<LetterCoordinate> letterCoordinates;
 
-        public PuzzleProducer(int depth = 7, int width = 15, List<WordModel> words = null)
+        PuzzleProducer()
+        {
+        }
+        private static readonly object padlock = new object();
+        private static PuzzleProducer instance = null;
+
+        public static PuzzleProducer Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new PuzzleProducer();
+                    }
+
+                    return instance;
+                }
+            }
+        }
+
+
+        public string[,] GetMatris(int depth = 7, int width = 15, List<WordModel> words = null)
         {
             mDepth = depth;
             mWidth = width;
             matris = new string[mDepth, mWidth];
             isFirstWord = true;
             Words = words;
+            letterCoordinates = new List<LetterCoordinate>();
             Console.WriteLine($"Matris initialized. Word count :{Words.Count}");
-            //PrintMatris();
-        }
 
-        public string[,] GetMatris()
-        {
             foreach (var word in Words)
             {
                 Console.WriteLine($"Word : {word.Word}");
+                letterCoordinates.Add(new LetterCoordinate
+                {
+                    WordModel = word
+                });
                 var res = WriteWord(word);
                 if (!res)
                 {
@@ -50,6 +76,13 @@ namespace WordGamePuzzle_Backend.Controllers
                     for (int i = 0; i < word.Letters.Count; i++)
                     {
                         matris[(mDepth / 2), ((mWidth / 5) + i)] = word.Letters[i].Letter;
+                        letterCoordinates
+                            .FirstOrDefault(x => x.WordModel.Id == word.Id)
+                            ?.Coordinates.Add(new Location
+                            {
+                                x = (mDepth / 2),
+                                y = ((mWidth / 5) + i)
+                            });
                     }
 
                     isFirstWord = false;
@@ -179,6 +212,13 @@ namespace WordGamePuzzle_Backend.Controllers
                 for (int i = 0; i < word.Letters.Count; i++)
                 {
                     matris[x, y + i] = word.Letters[i].Letter;
+                    letterCoordinates
+                        .FirstOrDefault(x => x.WordModel.Id == word.Id)
+                        .Coordinates.Add(new Location
+                        {
+                            x = x,
+                            y = y + i
+                        });
                 }
 
                 return true;
@@ -239,6 +279,13 @@ namespace WordGamePuzzle_Backend.Controllers
                 for (int i = 0; i < word.Letters.Count; i++)
                 {
                     matris[x + i, y] = word.Letters[i].Letter;
+                    letterCoordinates
+                        .FirstOrDefault(x=>x.WordModel.Id == word.Id)
+                        .Coordinates.Add(new Location
+                        {
+                            x= x + i,
+                            y = y
+                        });
                 }
 
                 return true;
@@ -292,9 +339,18 @@ namespace WordGamePuzzle_Backend.Controllers
                 Console.WriteLine(" |");
             }
         }
+
+        public List<LetterCoordinate> GetLetterCoordinates()
+        {
+            /*foreach (var letterCoordinate in letterCoordinates) 
+            {
+                letterCoordinate.WordModel.Letters = letterCoordinate.WordModel.Letters.OrderBy(x => x.Id).ToList();
+            }*/
+            return letterCoordinates;
+        }
     }
 
-    class Location
+    public class Location
     {
         public int x { get; set; }
         public int y { get; set; }

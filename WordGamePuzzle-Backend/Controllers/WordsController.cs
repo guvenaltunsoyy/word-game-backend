@@ -19,6 +19,7 @@ namespace WordGamePuzzle_Backend.Controllers
         private readonly ILogger<WordsController> _logger;
         private readonly DataContext _dataContext;
         private readonly List<LetterModel> _letters;
+        private List<WordModel> _puzzleWords;
         public WordsController(ILogger<WordsController> logger, 
             DataContext context)
         {
@@ -27,8 +28,8 @@ namespace WordGamePuzzle_Backend.Controllers
             _letters = _dataContext.Letters.ToList();
         }
         // GET: api/Words
-        [HttpGet]
-        public ActionResult GetWords()
+        [HttpGet("all")]
+        public ActionResult GetAllWordModels()
         {
             _logger.LogInformation(message:"GetAllWords Called");
             try
@@ -120,13 +121,12 @@ namespace WordGamePuzzle_Backend.Controllers
 
         // GET: api/Words/1/2
         [HttpGet("{groupId}/{wordCount}")]
-        public ActionResult GetGameWords(int groupId, int wordCount)
+        public ActionResult GetPuzzleWords(int groupId, int wordCount)
         {
             try
             {
-                var _words = GetAllWords().Where(x => x.GroupId == groupId).Take(wordCount).ToList();
-                PuzzleProducer puzzle = new PuzzleProducer(7, 15, _words);
-                var res = puzzle.GetMatris();
+                _puzzleWords = GetAllWords().Where(x => x.GroupId == groupId).Take(wordCount).ToList();
+                var res = PuzzleProducer.Instance.GetMatris(15, 15, _puzzleWords);
                 string jsonData = JsonConvert.SerializeObject(res);
                 return Content(jsonData, "application/json");
             }
@@ -136,6 +136,20 @@ namespace WordGamePuzzle_Backend.Controllers
             }
         }
 
+        // GET: api/Words
+        [HttpGet("")]
+        public ActionResult GetWords()
+        {
+            try
+            {
+                string jsonData = JsonConvert.SerializeObject(PuzzleProducer.Instance.GetLetterCoordinates());
+                return Content(jsonData, "application/json");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(404);
+            }
+        }
         public List<WordModel> GetAllWords()
         {
             List<LetterModel> _lets;

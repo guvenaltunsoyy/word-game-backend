@@ -12,6 +12,6 @@ namespace WordGamePuzzle_Backend.Models
             Letters = new List<LetterModel>();
         }
         public List<LetterModel> Letters { get; set; }
-
+        
     }
 }
