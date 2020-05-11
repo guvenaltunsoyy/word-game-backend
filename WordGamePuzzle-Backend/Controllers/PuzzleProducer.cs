@@ -58,8 +58,27 @@ namespace WordGamePuzzle_Backend.Controllers
                 var res = WriteWord(word);
                 if (!res)
                 {
-                    Console.WriteLine("Not written.");
-
+                    Console.WriteLine("Not written. Try again");
+                    if (CheckMatrisVerticalToDown(word, 1, mWidth-2))
+                    {
+                        WriteWordToDown(word, 0, mWidth - 1);
+                    }
+                    else if (CheckMatrisVerticalToDown(word, 1, 1))
+                    {
+                        WriteWordToDown(word, 0, 0);
+                    }
+                    else if (CheckMatrisHorizontalToRight(word,1,1))
+                    {
+                        WriteWordToRight(word, 0, 0);
+                    }
+                    else if (CheckMatrisHorizontalToRight(word, depth-1, 1))
+                    {
+                        WriteWordToRight(word, depth-1, 1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Matris not available.");
+                    }
                 }
             }
             Console.WriteLine("Words finished.");
@@ -75,12 +94,12 @@ namespace WordGamePuzzle_Backend.Controllers
                 {
                     for (int i = 0; i < word.Word.Length; i++)
                     {
-                        matris[(mDepth / 2), ((mWidth / 5) + i)] = word.Word[i].ToString();
+                        matris[(mDepth / 3), ((mWidth / 5) + i)] = word.Word[i].ToString();
                         letterCoordinates
                             .FirstOrDefault(x => x.WordModel.Id == word.Id)
                             ?.Coordinates.Add(new Location
                             {
-                                x = (mDepth / 2),
+                                x = (mDepth / 3),
                                 y = ((mWidth / 5) + i)
                             });
                     }
@@ -191,7 +210,7 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 1; i < word.Word.Length; i++)
                 {
-                    if (!string.IsNullOrEmpty(matris[x, y - i]) || !string.IsNullOrEmpty(matris[x + 1, y + i]) || !string.IsNullOrEmpty(matris[x - 1, y + i]))
+                    if (!string.IsNullOrEmpty(matris[x, y - i]) || !string.IsNullOrEmpty(matris[x + 1, y - i]) || !string.IsNullOrEmpty(matris[x - 1, y - i]))
                     {
                         return false;
                     }
@@ -240,7 +259,7 @@ namespace WordGamePuzzle_Backend.Controllers
             {
                 for (int i = 1; i < word.Word.Length; i++)
                 {
-                    if (!string.IsNullOrEmpty(matris[x - i, y]) || !string.IsNullOrEmpty(matris[x + i, y + 1]) || !string.IsNullOrEmpty(matris[x + i, y - 1]))
+                    if (!string.IsNullOrEmpty(matris[x - i, y]) || !string.IsNullOrEmpty(matris[x - i, y + 1]) || !string.IsNullOrEmpty(matris[x - i, y - 1]))
                     {
                         return false;
                     }
