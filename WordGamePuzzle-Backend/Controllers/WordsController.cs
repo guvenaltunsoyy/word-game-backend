@@ -83,19 +83,44 @@ namespace WordGamePuzzle_Backend.Controllers
 
 
         // GET: api/Words/1/2
-        [HttpGet("{groupId}/{wordCount}")]
-        public ActionResult GetPuzzleWords(int groupId, int wordCount)
+        [HttpGet("{level}/{wordCount}")]
+        public ActionResult GetPuzzleWords(int level, int wordCount)
         {
             try
             {
-                _puzzleWords = GetAllWords().Where(x => x.GroupId == groupId).Take(wordCount).ToList();
-                var res = PuzzleProducer.Instance.GetMatris(12, 15, _puzzleWords);
+                Random r = new Random();
+                var randomGroupId = r.Next(0, 7);
+                Console.WriteLine($"Random grup id {randomGroupId}");
+                var allWords = GetAllWords();
+                if (wordCount > 1)
+                {
+                    _puzzleWords = allWords.Where(x => x.Level == level && x.GroupId == randomGroupId).Take(wordCount - 1).ToList();
+                    _puzzleWords.Insert(0, allWords.FirstOrDefault(x => x.GroupId == randomGroupId && x.Level == 6));
+                }
+                else
+                {
+                    _puzzleWords = allWords.Where(x => x.Level == level && x.GroupId == randomGroupId).Take(wordCount).ToList();
+                }
+
+                if (wordCount != _puzzleWords.Count)
+                {
+                    if (level == 5)
+                    {
+                        _puzzleWords.AddRange(allWords.Where(x=> x.Level == (level -1) && x.GroupId == randomGroupId).Take(wordCount - _puzzleWords.Count));
+                    }
+                   else
+                    {
+                        _puzzleWords.AddRange(allWords.Where(x => x.Level == (level+1) && x.GroupId == randomGroupId).Take(wordCount - _puzzleWords.Count));
+                    }
+                }
+
+                var res = PuzzleProducer.Instance.GetMatris(9, 15, _puzzleWords);
                 string jsonData = JsonConvert.SerializeObject(res);
                 return Content(jsonData, "application/json");
             }
             catch (Exception e)
             {
-                return StatusCode(404);
+                return StatusCode(404, e.Message);
             }
         }
 
@@ -106,6 +131,10 @@ namespace WordGamePuzzle_Backend.Controllers
             try
             {
                 string jsonData = JsonConvert.SerializeObject(PuzzleProducer.Instance.GetLetterCoordinates());
+                PuzzleProducer.Instance.GetLetterCoordinates().ForEach(x =>
+                {
+                    Console.WriteLine(x.WordModel.Word);
+                });
                 return Content(jsonData, "application/json");
             }
             catch (Exception e)
